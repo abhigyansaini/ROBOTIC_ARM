@@ -1,5 +1,5 @@
 from sqlalchemy import Column, Integer, String, DateTime
-from datetime import datetime
+from datetime import datetime, timezone
 
 from backend.database.connection import Base
 
@@ -13,8 +13,13 @@ class User(Base):
 
     email = Column(String(100), unique=True, nullable=False)
 
+    phone = Column(String(30))
+
+    role = Column(String(50))
+
     password_hash = Column(String(255), nullable=False)
 
-    role = Column(String(30))
-
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(
+        DateTime,
+        default=lambda: datetime.now(timezone.utc)
+    )

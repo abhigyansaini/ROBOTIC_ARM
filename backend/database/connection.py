@@ -1,18 +1,40 @@
 from sqlalchemy import create_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
 
-# SQLite database file
-DATABASE_URL = "sqlite:///factoryops.db"
+from backend.core.config import settings
 
-# Create the database engine
-engine = create_engine(DATABASE_URL, echo=True)
+# Database URL
+DATABASE_URL = settings.DATABASE_URL
 
-# Create a session factory
+# Create database engine
+engine = create_engine(
+    DATABASE_URL,
+    echo=False,
+    connect_args={"check_same_thread": False}
+)
+
+# Create session factory
 SessionLocal = sessionmaker(
-    bind=engine,
+    autocommit=False,
     autoflush=False,
-    autocommit=False
+    bind=engine
 )
 
 # Base class for all models
 Base = declarative_base()
+
+
+def get_db():
+    """
+    FastAPI dependency that provides
+    a database session for each request.
+    """
+    db = SessionLocal()
+
+    try:
+        yield db
+
+    finally:
+        db.close()
+        
+        

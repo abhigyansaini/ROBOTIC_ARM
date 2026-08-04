@@ -1,6 +1,7 @@
 from sqlalchemy import Column, Integer, Float, String, DateTime, ForeignKey
-from datetime import datetime,timezone
 from sqlalchemy.orm import relationship
+from datetime import datetime, timezone
+
 from backend.database.connection import Base
 
 
@@ -9,22 +10,26 @@ class Prediction(Base):
 
     prediction_id = Column(Integer, primary_key=True, autoincrement=True)
 
-    robot_id = Column(Integer, ForeignKey("robot_arms.robot_id"))
+    robot_id = Column(
+        Integer,
+        ForeignKey("robot_arms.robot_id"),
+        nullable=False
+    )
 
-    failure_probability = Column(Float)
+    failure_probability = Column(Float, nullable=False)
 
-    predicted_fault = Column(String(100))
+    predicted_fault = Column(String(150))
 
     confidence = Column(Float)
 
-    recommended_action = Column(String(200))
+    recommendation = Column(String(300))
 
-    timestamp = Column(
-    DateTime,
-    default=lambda: datetime.now(timezone.utc)
-)
-    
-robot = relationship(
-    "RobotArm",
-    back_populates="predictions"
-)
+    prediction_time = Column(
+        DateTime,
+        default=lambda: datetime.now(timezone.utc)
+    )
+
+    robot = relationship(
+        "RobotArm",
+        back_populates="predictions"
+    )

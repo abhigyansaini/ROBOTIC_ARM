@@ -1,30 +1,33 @@
 from fastapi import FastAPI
-
-from backend.database.connection import Base, engine
-
-# Import all models so SQLAlchemy knows about them
-from backend.models import *
+from backend.api import (
+    robot_router,
+    sensor_router,
+    telemetry_router,
+    prediction_router,
+    maintenance_router,
+    incident_router,
+    notification_router,
+    user_router,
+)
 
 app = FastAPI(
     title="FactoryOps AI",
     version="1.0.0",
-    description="Predictive Maintenance and Process Intelligence API"
+    description="Predictive Maintenance API for Industrial Robot Arms"
 )
 
-# Create database tables if they don't already exist
-Base.metadata.create_all(bind=engine)
+app.include_router(robot_router)
+app.include_router(sensor_router)
+app.include_router(telemetry_router)
+app.include_router(prediction_router)
+app.include_router(maintenance_router)
+app.include_router(incident_router)
+app.include_router(notification_router)
+app.include_router(user_router)
 
 
 @app.get("/")
 def root():
     return {
-        "message": "FactoryOps AI Backend is Running!"
+        "message": "Welcome to FactoryOps AI 🚀"
     }
-
-
-@app.get("/health")
-def health():
-    return {
-        "status": "Healthy"
-    }
-    

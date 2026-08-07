@@ -7,11 +7,10 @@ from pydantic import BaseModel, ConfigDict
 class MaintenanceBase(BaseModel):
     robot_id: int
     maintenance_type: str
-    description: Optional[str] = None
+    technician_name: str
     maintenance_date: date
     next_due_date: Optional[date] = None
-    technician_name: str
-    maintenance_status: str
+    remarks: Optional[str] = None
 
 
 class MaintenanceCreate(MaintenanceBase):
@@ -20,11 +19,10 @@ class MaintenanceCreate(MaintenanceBase):
 
 class MaintenanceUpdate(BaseModel):
     maintenance_type: Optional[str] = None
-    description: Optional[str] = None
+    technician_name: Optional[str] = None
     maintenance_date: Optional[date] = None
     next_due_date: Optional[date] = None
-    technician_name: Optional[str] = None
-    maintenance_status: Optional[str] = None
+    remarks: Optional[str] = None
 
 
 class MaintenanceResponse(MaintenanceBase):

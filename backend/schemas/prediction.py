@@ -7,9 +7,8 @@ from pydantic import BaseModel, ConfigDict
 class PredictionBase(BaseModel):
     robot_id: int
     failure_probability: float
-    predicted_status: str
-    recommended_action: Optional[str] = None
-
+    predicted_fault: str
+    recommendation: Optional[str] = None
 
 class PredictionCreate(PredictionBase):
     pass
@@ -17,8 +16,8 @@ class PredictionCreate(PredictionBase):
 
 class PredictionUpdate(BaseModel):
     failure_probability: Optional[float] = None
-    predicted_status: Optional[str] = None
-    recommended_action: Optional[str] = None
+    predicted_fault: Optional[str] = None
+    recommendation: Optional[str] = None
 
 
 class PredictionResponse(PredictionBase):

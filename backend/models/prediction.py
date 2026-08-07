@@ -17,7 +17,7 @@ class Prediction(Base):
     )
 
     failure_probability = Column(Float, nullable=False)
-
+    
     predicted_fault = Column(String(150))
 
     confidence = Column(Float)

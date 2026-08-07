@@ -23,6 +23,7 @@ class PredictionUpdate(BaseModel):
 
 class PredictionResponse(PredictionBase):
     prediction_id: int
+  
     prediction_time: datetime
 
     model_config = ConfigDict(from_attributes=True)

@@ -5,4 +5,4 @@ from .prediction import Prediction
 from .maintenance import Maintenance
 from .incident import Incident
 from .notification import Notification
-from .user import User
+from .user import User 

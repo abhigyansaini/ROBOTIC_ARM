@@ -8,10 +8,11 @@ from backend.api import (
     incident_router,
     notification_router,
     user_router,
+    health_router,
 )
 
 app = FastAPI(
-    title="FactoryOps AI",
+    title="Predictive Robot Arm API",
     version="1.0.0",
     description="Predictive Maintenance API for Industrial Robot Arms"
 )
@@ -24,10 +25,12 @@ app.include_router(maintenance_router)
 app.include_router(incident_router)
 app.include_router(notification_router)
 app.include_router(user_router)
-
+app.include_router(health_router)
 
 @app.get("/")
 def root():
     return {
-        "message": "Welcome to FactoryOps AI 🚀"
+        "message": "Welcome to Predictive Robot Arm API 🚀"
     }
+    
+    

@@ -11,10 +11,6 @@ env/
 # Environment variables
 .env
 
-# Database
-*.db
-factoryops.db
-
 # IDE
 .vscode/
 .idea/

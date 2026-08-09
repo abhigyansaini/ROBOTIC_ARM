@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException,status
 from sqlalchemy.orm import Session
 
 from backend.database.connection import get_db
@@ -21,7 +21,24 @@ router = APIRouter(
 )
 
 
-@router.post("/", response_model=IncidentResponse)
+@router.post(
+    "/",
+    response_model=IncidentResponse,
+    status_code=status.HTTP_201_CREATED,
+    summary="Create a new incident",
+    description="Creates a new incident record for a robot arm.",
+    responses={
+        201: {
+            "description": "Incident created successfully"
+        },
+        400: {
+            "description": "Invalid request data"
+        },
+        404: {
+            "description": "Robot not found"
+        }
+    }
+)
 def add_incident(
     incident: IncidentCreate,
     db: Session = Depends(get_db),
@@ -29,12 +46,37 @@ def add_incident(
     return create_incident(db, incident)
 
 
-@router.get("/", response_model=list[IncidentResponse])
+@router.get(
+    "/",
+    response_model=list[IncidentResponse],
+    status_code=status.HTTP_200_OK,
+    summary="Get all incidents",
+    description="Retrieves all incident records.",
+    responses={
+        200: {
+            "description": "Incidents retrieved successfully"
+        }
+    }
+)
 def fetch_all_incidents(db: Session = Depends(get_db)):
     return get_all_incidents(db)
 
 
-@router.get("/{incident_id}", response_model=IncidentResponse)
+@router.get(
+    "/{incident_id}",
+    response_model=IncidentResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Get incident by ID",
+    description="Retrieves a specific incident record by its ID.",
+    responses={
+        200: {
+            "description": "Incident retrieved successfully"
+        },
+        404: {
+            "description": "Incident not found"
+        }
+    }
+)
 def fetch_incident(
     incident_id: int,
     db: Session = Depends(get_db),
@@ -47,7 +89,21 @@ def fetch_incident(
     return incident
 
 
-@router.put("/{incident_id}", response_model=IncidentResponse)
+@router.put(
+    "/{incident_id}",
+    response_model=IncidentResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Update incident",
+    description="Updates an existing incident.",
+    responses={
+        200: {
+            "description": "Incident updated successfully"
+        },
+        404: {
+            "description": "Incident not found"
+        }
+    }
+)
 def edit_incident(
     incident_id: int,
     incident: IncidentUpdate,
@@ -61,7 +117,20 @@ def edit_incident(
     return updated
 
 
-@router.delete("/{incident_id}")
+@router.delete(
+    "/{incident_id}",
+    status_code=status.HTTP_200_OK,
+    summary="Delete incident",
+    description="Deletes an existing incident.",
+    responses={
+        200: {
+            "description": "Incident deleted successfully"
+        },
+        404: {
+            "description": "Incident not found"
+        }
+    }
+)
 def remove_incident(
     incident_id: int,
     db: Session = Depends(get_db),
@@ -71,4 +140,7 @@ def remove_incident(
     if not deleted:
         raise HTTPException(status_code=404, detail="Incident not found")
 
-    return {"message": "Incident deleted successfully"}
+    return {
+    "status": "success",
+    "message": "Incident deleted successfully"
+    }

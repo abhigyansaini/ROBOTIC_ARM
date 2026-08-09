@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
 
 from backend.database.connection import get_db
@@ -21,7 +21,21 @@ router = APIRouter(
 )
 
 
-@router.post("/", response_model=PredictionResponse)
+@router.post(
+    "/",
+    response_model=PredictionResponse,
+    status_code=status.HTTP_201_CREATED,
+    summary="Create a new prediction",
+    description="Creates a new prediction record.",
+    responses={
+        201: {
+            "description": "Prediction created successfully"
+        },
+        400: {
+            "description": "Invalid request data"
+        }
+    }
+)
 def add_prediction(
     prediction: PredictionCreate,
     db: Session = Depends(get_db)
@@ -29,12 +43,39 @@ def add_prediction(
     return create_prediction(db, prediction)
 
 
-@router.get("/", response_model=list[PredictionResponse])
+
+
+@router.get(
+    "/",
+    response_model=list[PredictionResponse],
+    status_code=status.HTTP_200_OK,
+    summary="Get all predictions",
+    description="Retrieves all prediction records.",
+    responses={
+        200: {
+            "description": "Predictions retrieved successfully"
+        }
+    }
+)
 def fetch_all_predictions(db: Session = Depends(get_db)):
     return get_all_predictions(db)
 
 
-@router.get("/{prediction_id}", response_model=PredictionResponse)
+@router.get(
+    "/{prediction_id}",
+    response_model=PredictionResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Get prediction by ID",
+    description="Retrieves a specific prediction by its ID.",
+    responses={
+        200: {
+            "description": "Prediction retrieved successfully"
+        },
+        404: {
+            "description": "Prediction not found"
+        }
+    }
+)
 def fetch_prediction(
     prediction_id: int,
     db: Session = Depends(get_db)
@@ -50,7 +91,24 @@ def fetch_prediction(
     return prediction
 
 
-@router.put("/{prediction_id}", response_model=PredictionResponse)
+@router.put(
+    "/{prediction_id}",
+    response_model=PredictionResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Update prediction",
+    description="Updates a specific prediction by its ID.",
+    responses={
+        200: {
+            "description": "Prediction updated successfully"
+        },
+        400: {
+            "description": "Invalid request data"
+        },
+        404: {
+            "description": "Prediction not found"
+        }
+    }
+)
 def edit_prediction(
     prediction_id: int,
     prediction: PredictionUpdate,
@@ -71,7 +129,16 @@ def edit_prediction(
     return updated
 
 
-@router.delete("/{prediction_id}")
+@router.delete(
+    "/{prediction_id}",
+    status_code=status.HTTP_200_OK,
+    summary="Delete prediction",
+    description="Deletes a specific prediction by its ID.",
+    responses={
+        200: {"description": "Prediction deleted successfully"},
+        404: {"description": "Prediction not found"}
+    }
+)
 def remove_prediction(
     prediction_id: int,
     db: Session = Depends(get_db)

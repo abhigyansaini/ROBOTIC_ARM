@@ -1,13 +1,16 @@
 from pydantic import BaseModel
 
-
 class HealthRequest(BaseModel):
-    temperature: float
-    vibration: float
-    current: float
-    torque: float
+    robot_id: int
 
 
 class HealthResponse(BaseModel):
+    robot_id: int
+
+    temperature: float
+    vibration: float
+    motor_current: float
+    torque: float
+
     health_score: float
     health_status: str

@@ -13,6 +13,8 @@ from backend.services.telemetry_service import (
     get_telemetry_by_id,
     update_telemetry,
     delete_telemetry,
+    get_latest_telemetry_by_robot,
+    
 )
 
 router = APIRouter(
@@ -57,6 +59,35 @@ def add_telemetry(
 )
 def fetch_all_telemetry(db: Session = Depends(get_db)):
     return get_all_telemetry(db)
+
+@router.get(
+    "/robot/{robot_id}/latest",
+    response_model=TelemetryResponse,
+    status_code=status.HTTP_200_OK,
+    summary="Get latest telemetry for a robot",
+    description="Retrieves the latest telemetry record for a specific robot.",
+    responses={
+        200: {
+            "description": "Latest telemetry retrieved successfully"
+        },
+        404: {
+            "description": "Telemetry not found for this robot"
+        }
+    }
+)
+def fetch_latest_robot_telemetry(
+    robot_id: int,
+    db: Session = Depends(get_db)
+):
+    telemetry = get_latest_telemetry_by_robot(db, robot_id)
+
+    if not telemetry:
+        raise HTTPException(
+            status_code=404,
+            detail="No telemetry found for this robot"
+        )
+
+    return telemetry
 
 
 @router.get(

@@ -60,3 +60,13 @@ def delete_telemetry(db: Session, telemetry_id: int):
     db.commit()
 
     return True
+
+def get_latest_telemetry_by_robot(db: Session, robot_id: int):
+    return (
+        db.query(Telemetry)
+        .filter(Telemetry.robot_id == robot_id)
+        .order_by(Telemetry.telemetry_id.desc())
+        .first()
+    )
+    
+    

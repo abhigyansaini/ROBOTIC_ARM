@@ -17,6 +17,8 @@ from backend.services.prediction_service import (
     get_prediction_by_id,
     update_prediction,
     delete_prediction,
+    predict_for_robot,
+    
 )
 
 router = APIRouter(
@@ -89,6 +91,28 @@ def generate_ml_prediction(
 
     # Save to database
     return create_prediction(db, prediction)
+
+@router.post(
+    "/robot/{robot_id}",
+    response_model=PredictionResponse,
+    status_code=status.HTTP_201_CREATED,
+    summary="Generate prediction for a robot",
+    description="Gets the latest telemetry for a robot and generates an ML prediction."
+)
+def generate_robot_prediction(
+    robot_id: int,
+    db: Session = Depends(get_db)
+):
+    prediction = predict_for_robot(db, robot_id)
+
+    if not prediction:
+        raise HTTPException(
+            status_code=404,
+            detail="No telemetry found for this robot"
+        )
+
+    return prediction
+
 
 @router.get(
     "/",

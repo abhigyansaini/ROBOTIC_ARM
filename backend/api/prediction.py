@@ -6,7 +6,11 @@ from backend.schemas.prediction import (
     PredictionCreate,
     PredictionUpdate,
     PredictionResponse,
+    MLPredictionRequest
 )
+
+from backend.ml.predict import predict_protective_stop
+
 from backend.services.prediction_service import (
     create_prediction,
     get_all_predictions,
@@ -42,8 +46,49 @@ def add_prediction(
 ):
     return create_prediction(db, prediction)
 
+@router.post(
+    "/ml",
+    response_model=PredictionResponse,
+    status_code=status.HTTP_201_CREATED,
+    summary="Generate ML prediction",
+    description="Uses the trained Random Forest model to predict a robot protective stop."
+)
+def generate_ml_prediction(
+    data: MLPredictionRequest,
+    db: Session = Depends(get_db)
+):
 
+    # Convert request data to dictionary
+    sensor_data = data.model_dump()
 
+    # robot_id is not an ML feature
+    robot_id = sensor_data.pop("robot_id")
+
+    # Run Random Forest
+    result = predict_protective_stop(sensor_data)
+
+    # Determine predicted fault
+    if result["prediction"] == 1:
+        predicted_fault = "Robot Protective Stop"
+        recommendation = (
+            "Inspect robot operating conditions and joint parameters."
+        )
+    else:
+        predicted_fault = "No Protective Stop"
+        recommendation = (
+            "Robot operating conditions appear normal."
+        )
+
+    # Create prediction object
+    prediction = PredictionCreate(
+        robot_id=robot_id,
+        failure_probability=result["probability"],
+        predicted_fault=predicted_fault,
+        recommendation=recommendation
+    )
+
+    # Save to database
+    return create_prediction(db, prediction)
 
 @router.get(
     "/",

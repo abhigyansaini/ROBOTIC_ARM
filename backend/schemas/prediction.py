@@ -26,3 +26,35 @@ class PredictionResponse(PredictionBase):
     prediction_time: datetime
 
     model_config = ConfigDict(from_attributes=True)
+    
+class MLPredictionRequest(BaseModel):
+    robot_id: int
+
+    Current_J0: float
+    Temperature_T0: float
+
+    Current_J1: float
+    Temperature_J1: float
+
+    Current_J2: float
+    Temperature_J2: float
+
+    Current_J3: float
+    Temperature_J3: float
+
+    Current_J4: float
+    Temperature_J4: float
+
+    Current_J5: float
+    Temperature_J5: float
+
+    Speed_J0: float
+    Speed_J1: float
+    Speed_J2: float
+    Speed_J3: float
+    Speed_J4: float
+    Speed_J5: float
+
+    Tool_current: float
+    cycle: float
+    

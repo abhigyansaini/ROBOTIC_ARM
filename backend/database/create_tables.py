@@ -13,6 +13,7 @@ from backend.models import (
 )
 
 
+
 def create_tables():
     """
     Create all database tables.

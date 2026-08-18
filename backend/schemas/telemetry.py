@@ -6,15 +6,35 @@ from pydantic import BaseModel, ConfigDict
 
 class TelemetryBase(BaseModel):
     robot_id: int
-    temperature: Optional[float] = None
-    vibration: Optional[float] = None
-    motor_current: Optional[float] = None
-    voltage: Optional[float] = None
-    power_consumption: Optional[float] = None
-    torque: Optional[float] = None
-    speed_rpm: Optional[float] = None
-    operating_hours: Optional[float] = None
-    humidity: Optional[float] = None
+
+    Current_J0: Optional[float] = None
+    Temperature_T0: Optional[float] = None
+
+    Current_J1: Optional[float] = None
+    Temperature_J1: Optional[float] = None
+
+    Current_J2: Optional[float] = None
+    Temperature_J2: Optional[float] = None
+
+    Current_J3: Optional[float] = None
+    Temperature_J3: Optional[float] = None
+
+    Current_J4: Optional[float] = None
+    Temperature_J4: Optional[float] = None
+
+    Current_J5: Optional[float] = None
+    Temperature_J5: Optional[float] = None
+
+    Speed_J0: Optional[float] = None
+    Speed_J1: Optional[float] = None
+    Speed_J2: Optional[float] = None
+    Speed_J3: Optional[float] = None
+    Speed_J4: Optional[float] = None
+    Speed_J5: Optional[float] = None
+
+    Tool_current: Optional[float] = None
+
+    cycle: Optional[float] = None
 
 
 class TelemetryCreate(TelemetryBase):
@@ -22,15 +42,34 @@ class TelemetryCreate(TelemetryBase):
 
 
 class TelemetryUpdate(BaseModel):
-    temperature: Optional[float] = None
-    vibration: Optional[float] = None
-    motor_current: Optional[float] = None
-    voltage: Optional[float] = None
-    power_consumption: Optional[float] = None
-    torque: Optional[float] = None
-    speed_rpm: Optional[float] = None
-    operating_hours: Optional[float] = None
-    humidity: Optional[float] = None
+    Current_J0: Optional[float] = None
+    Temperature_T0: Optional[float] = None
+
+    Current_J1: Optional[float] = None
+    Temperature_J1: Optional[float] = None
+
+    Current_J2: Optional[float] = None
+    Temperature_J2: Optional[float] = None
+
+    Current_J3: Optional[float] = None
+    Temperature_J3: Optional[float] = None
+
+    Current_J4: Optional[float] = None
+    Temperature_J4: Optional[float] = None
+
+    Current_J5: Optional[float] = None
+    Temperature_J5: Optional[float] = None
+
+    Speed_J0: Optional[float] = None
+    Speed_J1: Optional[float] = None
+    Speed_J2: Optional[float] = None
+    Speed_J3: Optional[float] = None
+    Speed_J4: Optional[float] = None
+    Speed_J5: Optional[float] = None
+
+    Tool_current: Optional[float] = None
+
+    cycle: Optional[float] = None
 
 
 class TelemetryResponse(TelemetryBase):

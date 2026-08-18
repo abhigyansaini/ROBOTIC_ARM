@@ -2,6 +2,8 @@ import random
 from datetime import datetime, timedelta
 
 from faker import Faker
+import pandas as pd
+from pathlib import Path
 
 from backend.database.connection import SessionLocal
 
@@ -179,72 +181,111 @@ def seed_telemetry():
         print("Telemetry already exists")
         return
 
+    # Path to the real ML dataset
+    BASE_DIR = Path(__file__).resolve().parent.parent
+    DATA_PATH = BASE_DIR / "ml" / "data" / "dataset_clean.xlsx"
+
+    # Load dataset
+    df = pd.read_excel(DATA_PATH)
+
+    # Clean column names
+    df.columns = df.columns.str.strip()
+
+    # The exact 20 features used by the ML model
+    features = [
+        "Current_J0",
+        "Temperature_T0",
+        "Current_J1",
+        "Temperature_J1",
+        "Current_J2",
+        "Temperature_J2",
+        "Current_J3",
+        "Temperature_J3",
+        "Current_J4",
+        "Temperature_J4",
+        "Current_J5",
+        "Temperature_J5",
+        "Speed_J0",
+        "Speed_J1",
+        "Speed_J2",
+        "Speed_J3",
+        "Speed_J4",
+        "Speed_J5",
+        "Tool_current",
+        "cycle"
+    ]
+
+    # Make sure all required columns exist
+    missing_columns = [
+        column for column in features
+        if column not in df.columns
+    ]
+
+    if missing_columns:
+        print("Missing columns from dataset:")
+        print(missing_columns)
+        return
+
     robots = db.query(RobotArm).all()
 
-    for _ in range(TELEMETRY_COUNT):
+    if not robots:
+        print("No robots found. Seed robots first.")
+        return
+
+    telemetry_records = []
+
+    # -----------------------------------
+    # Insert dataset rows
+    # -----------------------------------
+
+    for index, row in df.iterrows():
+
+        # Distribute dataset records across robots
+        robot = robots[index % len(robots)]
 
         telemetry = Telemetry(
+            robot_id=robot.robot_id,
 
-            robot_id=random.choice(robots).robot_id,
+            Current_J0=float(row["Current_J0"]),
+            Temperature_T0=float(row["Temperature_T0"]),
 
-            temperature=round(
-                random.uniform(25, 95),
-                2
-            ),
+            Current_J1=float(row["Current_J1"]),
+            Temperature_J1=float(row["Temperature_J1"]),
 
-            vibration=round(
-                random.uniform(0.2, 6.5),
-                2
-            ),
+            Current_J2=float(row["Current_J2"]),
+            Temperature_J2=float(row["Temperature_J2"]),
 
-            motor_current=round(
-                random.uniform(4, 20),
-                2
-            ),
+            Current_J3=float(row["Current_J3"]),
+            Temperature_J3=float(row["Temperature_J3"]),
 
-            voltage=round(
-                random.uniform(210, 240),
-                2
-            ),
+            Current_J4=float(row["Current_J4"]),
+            Temperature_J4=float(row["Temperature_J4"]),
 
-            power_consumption=round(
-                random.uniform(1.5, 10),
-                2
-            ),
+            Current_J5=float(row["Current_J5"]),
+            Temperature_J5=float(row["Temperature_J5"]),
 
-            torque=round(
-                random.uniform(20, 120),
-                2
-            ),
+            Speed_J0=float(row["Speed_J0"]),
+            Speed_J1=float(row["Speed_J1"]),
+            Speed_J2=float(row["Speed_J2"]),
+            Speed_J3=float(row["Speed_J3"]),
+            Speed_J4=float(row["Speed_J4"]),
+            Speed_J5=float(row["Speed_J5"]),
 
-            speed_rpm=round(
-                random.uniform(900, 3000),
-                2
-            ),
+            Tool_current=float(row["Tool_current"]),
+            cycle=float(row["cycle"]),
 
-            operating_hours=round(
-                random.uniform(50, 10000),
-                2
-            ),
-
-            humidity=round(
-                random.uniform(30, 90),
-                2
-            ),
-
-            timestamp=fake.date_time_between(
-                start_date="-30d",
-                end_date="now"
-            )
-
+            timestamp=datetime.now()
         )
 
-        db.add(telemetry)
+        telemetry_records.append(telemetry)
 
+    # Insert all records
+    db.add_all(telemetry_records)
     db.commit()
 
-    print(f"{TELEMETRY_COUNT} Telemetry Records Inserted")
-    
+    print(
+        f"{len(telemetry_records)} real ML telemetry records inserted"
+    )   
     
 # -----------------------------
 # Seed Predictions

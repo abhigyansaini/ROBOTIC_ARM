@@ -6,4 +6,5 @@ from .maintenance import router as maintenance_router
 from .incident import router as incident_router
 from .notification import router as notification_router
 from .user import router as user_router
+from .auth import router as auth_router
 from .health import router as health_router

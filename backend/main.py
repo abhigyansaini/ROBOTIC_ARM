@@ -9,6 +9,8 @@ from backend.api import (
     notification_router,
     user_router,
     health_router,
+    auth_router,
+    
 )
 
 app = FastAPI(
@@ -26,6 +28,7 @@ app.include_router(incident_router)
 app.include_router(notification_router)
 app.include_router(user_router)
 app.include_router(health_router)
+app.include_router(auth_router)
 
 @app.get("/")
 def root():

@@ -17,12 +17,6 @@ def create_prediction(db: Session, prediction: PredictionCreate):
 
     return db_prediction
 
-    db.add(db_prediction)
-    db.commit()
-    db.refresh(db_prediction)
-
-    return db_prediction
-
 def get_all_predictions(db: Session):
     return db.query(Prediction).all()
 

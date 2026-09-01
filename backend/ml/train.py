@@ -21,8 +21,9 @@ from sklearn.metrics import (
 # 1. Load dataset
 # -----------------------------------
 
-BASE_DIR = Path(__file__).resolve().parent.parent
-DATA_PATH = BASE_DIR / "ml" / "data" / "dataset_clean.xlsx"
+BASE_DIR = Path(__file__).resolve().parent
+
+DATA_PATH = BASE_DIR / "data" / "dataset_clean.xlsx"
 
 df = pd.read_excel(DATA_PATH)
 
